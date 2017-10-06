@@ -13,6 +13,6 @@ public class WebHookHandler {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just("WebHook response!!!"), String.class);
+                .body(Mono.just("WebHook response test!!!"), String.class);
     }
 }
