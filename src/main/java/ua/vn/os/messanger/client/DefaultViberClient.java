@@ -1,0 +1,52 @@
+package ua.vn.os.messanger.client;
+
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+
+@Component
+public class DefaultViberClient implements ViberClient {
+
+    private static final String API_HOST = "https://chatapi.viber.com";
+    private static final String WEB_HOOK_PATH = "/pa/set_webhook";
+    private static final String PRIVATE_TOKEN = "";
+
+    private final WebClient webClient;
+
+    public DefaultViberClient() {
+        this.webClient = WebClient.create(API_HOST);
+    }
+
+    @Override
+    public void sendWebHook() {
+        webClient
+                .post()
+                .uri(WEB_HOOK_PATH)
+                .body(Mono.just("{\"url\":\"\"}"), String.class)
+                .header("X-Viber-Auth-Token", PRIVATE_TOKEN)
+                .exchange()
+                .subscribe(x -> x.bodyToMono(String.class).subscribe(System.out::println))
+        ;
+
+    }
+
+    private WebHook createWebHookBody() {
+        return WebHook.builder()
+                .url("https://76d58e5c.ngrok.io/")
+                .event_types(emptyList())
+                .build();
+    }
+
+    @Data
+    @Builder
+    private static class WebHook {
+        private String url;
+        private List<String> event_types;
+    }
+}
