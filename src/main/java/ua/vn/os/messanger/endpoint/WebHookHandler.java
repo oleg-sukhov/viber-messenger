@@ -18,11 +18,10 @@ public class WebHookHandler {
     }
 
     public Mono<ServerResponse> sendWebHook(ServerRequest request) {
-        viberClient.sendWebHook();
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just("WebHook response test!!!"), String.class);
+                .body(viberClient.sendWebHook(), String.class);
     }
 
     public Mono<ServerResponse> home(ServerRequest request) {
