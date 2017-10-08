@@ -17,11 +17,16 @@ public class WebHookHandler {
         this.viberClient = viberClient;
     }
 
-    public Mono<ServerResponse> sendWebHook(ServerRequest request) {
+    public Mono<ServerResponse> sendStartConversationWebHook(ServerRequest request) {
         return ServerResponse
                 .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(viberClient.sendWebHook(), String.class);
+                .body(viberClient.sendStartConversationWebHook(), String.class);
+    }
+
+    public Mono<ServerResponse> sendEndConversationWebHook(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .body(viberClient.sendEndConversationWebHook(), String.class);
     }
 
     public Mono<ServerResponse> home(ServerRequest request) {

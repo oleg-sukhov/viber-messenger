@@ -28,13 +28,23 @@ public class DefaultViberClient implements ViberClient {
     }
 
     @Override
-    public Mono<String> sendWebHook() {
-        final WebHook webHookRequestBody = createWebHookBody();
-        final String body = convertAsJsonString(webHookRequestBody);
+    public Mono<String> sendStartConversationWebHook() {
+        final WebHook startConversationWebHookBody = createStartConversationWebHookBody();
+        return sendWebHookRequest(startConversationWebHookBody);
+    }
+
+    @Override
+    public Mono<String> sendEndConversationWebHook() {
+        final WebHook endConversationWebHookBody = createEndConversationWebHookBody();
+        return sendWebHookRequest(endConversationWebHookBody);
+    }
+
+    private Mono<String> sendWebHookRequest(final WebHook webHookRequestBody) {
+        final String jsonRequestBody = convertAsJsonString(webHookRequestBody);
         return webClient
                 .post()
                 .uri(WEB_HOOK_PATH)
-                .body(Mono.just(body), String.class)
+                .body(Mono.just(jsonRequestBody), String.class)
                 .header("X-Viber-Auth-Token", PRIVATE_TOKEN)
                 .exchange()
                 .block()
@@ -49,17 +59,24 @@ public class DefaultViberClient implements ViberClient {
         }
     }
 
-    private WebHook createWebHookBody() {
+    private WebHook createStartConversationWebHookBody() {
         return WebHook.builder()
                 .url("https://9444e86a.ngrok.io")
                 .event_types(emptyList())
                 .build();
     }
 
-    @Data
-    @Builder
-    private static class WebHook {
-        private String url;
-        private List<String> event_types;
+    private WebHook createEndConversationWebHookBody() {
+        return WebHook.builder()
+                .url("")
+                .build();
     }
 }
+
+@Data
+@Builder
+class WebHook {
+    private String url;
+    private List<String> event_types;
+}
+

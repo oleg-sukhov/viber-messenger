@@ -17,7 +17,8 @@ public class MessengerConfiguration {
 
     @Bean
     public RouterFunction<?> webHookRoute(@NotNull final WebHookHandler webHookHandler) {
-        return route(GET("/conversation/start"), webHookHandler::sendWebHook)
+        return route(GET("/conversation/start"), webHookHandler::sendStartConversationWebHook)
+                .andRoute(GET("/conversation/end"), webHookHandler::sendEndConversationWebHook)
                 .andRoute(POST("/"), webHookHandler::home);
     }
 
