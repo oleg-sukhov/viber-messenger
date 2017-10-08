@@ -17,7 +17,7 @@ public class DefaultViberClient implements ViberClient {
 
     private static final String API_HOST = "https://chatapi.viber.com";
     private static final String WEB_HOOK_PATH = "/pa/set_webhook";
-    private static final String PRIVATE_TOKEN = "";
+    private static final String PRIVATE_TOKEN = "46bb903684a7d498-70e6f9c4e80f09bc-742d19535a7d42f9";
 
     private final WebClient webClient;
     private final ObjectMapper jsonMapper;
@@ -30,27 +30,28 @@ public class DefaultViberClient implements ViberClient {
     @Override
     public Mono<String> sendWebHook() {
         final WebHook webHookRequestBody = createWebHookBody();
-
-        try {
-            jsonMapper.writeValue(System.out, webHookRequestBody);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        final String body = convertAsJsonString(webHookRequestBody);
         return webClient
                 .post()
                 .uri(WEB_HOOK_PATH)
-                .body(Mono.just("{\"url\":\"\"}"), String.class)
+                .body(Mono.just(body), String.class)
                 .header("X-Viber-Auth-Token", PRIVATE_TOKEN)
                 .exchange()
                 .block()
                 .bodyToMono(String.class);
+    }
 
+    private String convertAsJsonString(WebHook webHookRequestBody) {
+        try {
+            return jsonMapper.writeValueAsString(webHookRequestBody);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getCause());
+        }
     }
 
     private WebHook createWebHookBody() {
         return WebHook.builder()
-                .url("https://76d58e5c.ngrok.io/")
+                .url("https://9444e86a.ngrok.io")
                 .event_types(emptyList())
                 .build();
     }
