@@ -1,6 +1,5 @@
 package ua.vn.os.messanger.endpoint;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -27,6 +26,18 @@ public class WebHookHandler {
         return ServerResponse
                 .ok()
                 .body(viberClient.sendEndConversationWebHook(), String.class);
+    }
+
+    public Mono<ServerResponse> fetchAccountInfo(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .body(viberClient.fetchAccountInfo(), String.class);
+    }
+
+    public Mono<ServerResponse> sendMessage(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .body(viberClient.sentMessage(), String.class);
     }
 
     public Mono<ServerResponse> home(ServerRequest request) {

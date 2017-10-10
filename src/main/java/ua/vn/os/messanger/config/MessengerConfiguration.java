@@ -19,6 +19,8 @@ public class MessengerConfiguration {
     public RouterFunction<?> webHookRoute(@NotNull final WebHookHandler webHookHandler) {
         return route(GET("/conversation/start"), webHookHandler::sendStartConversationWebHook)
                 .andRoute(GET("/conversation/end"), webHookHandler::sendEndConversationWebHook)
+                .andRoute(GET("/account"), webHookHandler::fetchAccountInfo)
+                .andRoute(GET("/messages/send"), webHookHandler::sendMessage)
                 .andRoute(POST("/"), webHookHandler::home);
     }
 
