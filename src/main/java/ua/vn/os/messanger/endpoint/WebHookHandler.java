@@ -16,31 +16,32 @@ public class WebHookHandler {
         this.viberClient = viberClient;
     }
 
-    public Mono<ServerResponse> sendStartConversationWebHook(ServerRequest request) {
+    public Mono<ServerResponse> sendStartConversationWebHook(final ServerRequest request) {
         return ServerResponse
                 .ok()
                 .body(viberClient.sendStartConversationWebHook(), String.class);
     }
 
-    public Mono<ServerResponse> sendEndConversationWebHook(ServerRequest request) {
+    public Mono<ServerResponse> sendEndConversationWebHook(final ServerRequest request) {
         return ServerResponse
                 .ok()
                 .body(viberClient.sendEndConversationWebHook(), String.class);
     }
 
-    public Mono<ServerResponse> fetchAccountInfo(ServerRequest request) {
+    public Mono<ServerResponse> fetchAccountInfo(final ServerRequest request) {
         return ServerResponse
                 .ok()
                 .body(viberClient.fetchAccountInfo(), String.class);
     }
 
-    public Mono<ServerResponse> sendMessage(ServerRequest request) {
+    public Mono<ServerResponse> sendMessage(final ServerRequest request) {
         return ServerResponse
                 .ok()
-                .body(viberClient.sentMessage(), String.class);
+                .body(viberClient.sentMessage(request.bodyToMono(String.class)), String.class);
     }
 
     public Mono<ServerResponse> home(ServerRequest request) {
+        request.bodyToMono(String.class).subscribe(System.out::println);
         return ServerResponse
                 .ok()
                 .body(Flux.just("App works!!!"), String.class);
