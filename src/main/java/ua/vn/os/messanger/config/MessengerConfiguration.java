@@ -1,8 +1,8 @@
 package ua.vn.os.messanger.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import ua.vn.os.messanger.endpoint.WebHookHandler;
 
@@ -22,7 +22,8 @@ public class MessengerConfiguration {
                 .andRoute(POST("/"), webHookHandler::home);
     }
 
-    public ObjectMapper jsonMapper() {
-        return new ObjectMapper();
+    @Bean
+    public RestTemplate viberRestClient() {
+        return new RestTemplate();
     }
 }

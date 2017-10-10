@@ -1,13 +1,15 @@
 package ua.vn.os.messanger.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
@@ -17,14 +19,13 @@ public class DefaultViberClient implements ViberClient {
 
     private static final String API_HOST = "https://chatapi.viber.com";
     private static final String WEB_HOOK_PATH = "/pa/set_webhook";
+    private static final String AUTH_HEADER_NAME = "X-Viber-Auth-Token";
     private static final String PRIVATE_TOKEN = "46bb903684a7d498-70e6f9c4e80f09bc-742d19535a7d42f9";
 
-    private final WebClient webClient;
-    private final ObjectMapper jsonMapper;
+    private final RestTemplate viberRestClient;
 
-    public DefaultViberClient(final ObjectMapper jsonMapper) {
-        this.jsonMapper = jsonMapper;
-        this.webClient = WebClient.create(API_HOST);
+    public DefaultViberClient(final RestTemplate viberRestClient) {
+        this.viberRestClient = viberRestClient;
     }
 
     @Override
@@ -40,28 +41,26 @@ public class DefaultViberClient implements ViberClient {
     }
 
     private Mono<String> sendWebHookRequest(final WebHook webHookRequestBody) {
-        final String jsonRequestBody = convertAsJsonString(webHookRequestBody);
-        return webClient
-                .post()
-                .uri(WEB_HOOK_PATH)
-                .body(Mono.just(jsonRequestBody), String.class)
-                .header("X-Viber-Auth-Token", PRIVATE_TOKEN)
-                .exchange()
-                .block()
-                .bodyToMono(String.class);
+        RequestEntity<WebHook> request = createWebHookRequestEntity(webHookRequestBody);
+        ResponseEntity<String> response = viberRestClient.exchange(request, String.class);
+        return Mono.justOrEmpty(response.getBody());
     }
 
-    private String convertAsJsonString(WebHook webHookRequestBody) {
+    private RequestEntity<WebHook> createWebHookRequestEntity(WebHook webHookRequestBody) {
         try {
-            return jsonMapper.writeValueAsString(webHookRequestBody);
-        } catch (IOException e) {
+            return RequestEntity
+                    .post(new URI(API_HOST + WEB_HOOK_PATH))
+                    .header(AUTH_HEADER_NAME, PRIVATE_TOKEN)
+                    .body(webHookRequestBody);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
             throw new RuntimeException(e.getCause());
         }
     }
 
     private WebHook createStartConversationWebHookBody() {
         return WebHook.builder()
-                .url("https://9444e86a.ngrok.io")
+                .url("https://44ab1e9f.ngrok.io")
                 .event_types(emptyList())
                 .build();
     }
