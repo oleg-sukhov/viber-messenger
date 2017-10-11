@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Mono;
+import ua.vn.os.messanger.client.request.AccountRequest;
+import ua.vn.os.messanger.client.request.MessageRequest;
 import ua.vn.os.messanger.client.request.WebHookRequest;
 
 import java.util.List;
@@ -37,23 +39,23 @@ public class DefaultViberClient implements ViberClient {
 
     @Override
     public Mono<String> fetchAccountInfo() {
-        final RequestEntity<String> requestEntity = RequestEntity
+        final RequestEntity<AccountRequest> requestEntity = RequestEntity
                 .post(RequestType.ACCOUNT_INFO.getUri())
                 .header(AUTH_HEADER_NAME, PRIVATE_TOKEN)
-                .body("{ \"auth_token\": " + "\"" + PRIVATE_TOKEN + "\"}");
+                .body(createAccountRequest());
         ResponseEntity<String> response = viberRestClient.exchange(requestEntity, String.class);
         return Mono.justOrEmpty(response.getBody());
-
     }
 
     @Override
     public Mono<String> sentMessage(final Mono<String> message) {
-        final RequestEntity<String> requestEntity = RequestEntity
-                .post(RequestType.SEND_MESSAGE.getUri())
-                .header(AUTH_HEADER_NAME, PRIVATE_TOKEN)
-                .body("{ \"auth_token\": " + "\"" + PRIVATE_TOKEN + "\", \"receiver\": \"V+5X9zYTqfD7LtBpP77G9g==\", \"type\": \"text\", \"text\": \"test\"}");
-        ResponseEntity<String> response = viberRestClient.exchange(requestEntity, String.class);
-        return Mono.justOrEmpty(response.getBody());
+        return message.doOnSuccess(msg -> {
+            final RequestEntity<MessageRequest> requestEntity = RequestEntity
+                    .post(RequestType.SEND_MESSAGE.getUri())
+                    .header(AUTH_HEADER_NAME, PRIVATE_TOKEN)
+                    .body(createMessageRequest(msg));
+            viberRestClient.exchange(requestEntity, String.class);
+        });
     }
 
     private Mono<String> sendWebHookRequest(final WebHookRequest webHookRequest) {
@@ -71,7 +73,7 @@ public class DefaultViberClient implements ViberClient {
 
     private WebHookRequest createStartConversationWebHookRequest() {
         return WebHookRequest.builder()
-                .url("https://00aab422.ngrok.io/")
+                .url("https://52a6b756.ngrok.io/")
                 .eventTypes(createEventTypes())
                 .build();
     }
@@ -79,6 +81,21 @@ public class DefaultViberClient implements ViberClient {
     private WebHookRequest createEndConversationWebHookBody() {
         return WebHookRequest.builder()
                 .url("")
+                .build();
+    }
+
+    private MessageRequest createMessageRequest(final String message) {
+        return MessageRequest.builder()
+                .authToken(PRIVATE_TOKEN)
+                .receiver("eNFFlSxyJH3fkDce5WWEuQ==")
+                .type("text")
+                .text(message)
+                .build();
+    }
+
+    private AccountRequest createAccountRequest() {
+        return AccountRequest.builder()
+                .authToken(PRIVATE_TOKEN)
                 .build();
     }
 
