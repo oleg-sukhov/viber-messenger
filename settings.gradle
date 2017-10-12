@@ -1,1 +1,3 @@
 include 'client', 'server'
+
+rootProject.name = 'viber-messanger'

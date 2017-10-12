@@ -1,14 +1,30 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+    }
+}
+
+apply plugin: 'com.moowork.node'
+
 group 'ua.vn.os'
 version '0.0.1-SNAPSHOT'
 
-apply plugin: 'java'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+node {
+    version = '6.8.0'
+    npmVersion = '3.10.8'
+    download = true
+    workDir = file("${project.projectDir}/src/main/web/node_modules")
+    nodeModulesDir = file("${project.projectDir}/src/main/web/node_modules")
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+task build(type: NpmTask) {
+    args = ['run', 'build']
 }
+
+build.dependsOn(npm_install)
