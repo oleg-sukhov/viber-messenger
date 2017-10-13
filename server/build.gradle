@@ -13,7 +13,6 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -27,7 +26,6 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
-
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
@@ -37,3 +35,11 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
 }
+
+task copyAngularArtifacts(type: Copy) {
+    delete fileTree('src/main/resources/public').include('*')
+    from '../client/dist'
+    into 'src/main/resources/public'
+}
+
+build.dependsOn copyAngularArtifacts
