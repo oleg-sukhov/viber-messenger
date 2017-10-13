@@ -4,7 +4,7 @@ build/
 out/
 README.MD
 .idea/
-server/src/main/resources/public/
+server/src/main/resources/static/
 
 
 /* client-side*/

@@ -37,9 +37,9 @@ dependencies {
 }
 
 task copyAngularArtifacts(type: Copy) {
-    delete fileTree('src/main/resources/public').include('*')
+    delete fileTree('src/main/resources/static').include('*')
     from '../client/dist'
-    into 'src/main/resources/public'
+    into 'src/main/resources/static'
 }
 
 build.dependsOn copyAngularArtifacts
