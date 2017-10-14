@@ -6,5 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  tiles = [
+    {text: 'One', cols: 1, rows: 2, color: 'lightblue'},
+    {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'}
+  ];
 }
