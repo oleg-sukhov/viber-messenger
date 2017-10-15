@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
-import { MatToolbarModule, MatGridListModule, MatListModule } from '@angular/material'
+import { AccordionModule } from 'ngx-bootstrap/accordion'
 
 import { AppComponent } from './app.component'
 
@@ -10,9 +10,7 @@ import { AppComponent } from './app.component'
   ],
   imports: [
     BrowserModule,
-    MatToolbarModule,
-    MatGridListModule,
-    MatListModule
+    AccordionModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  tiles = [
-    {text: 'One', cols: 1, rows: 2, color: 'lightblue'},
-    {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'}
-  ];
+  public status: any = {
+    isFirstOpen: true,
+    isFirstDisabled: false
+  };
 }
