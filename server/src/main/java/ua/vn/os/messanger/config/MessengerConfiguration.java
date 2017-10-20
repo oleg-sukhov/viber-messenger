@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import ua.vn.os.messanger.endpoint.HomeHandler;
+import ua.vn.os.messanger.endpoint.MessageHandler;
 import ua.vn.os.messanger.endpoint.WebHookHandler;
 
 import javax.validation.constraints.NotNull;
@@ -18,12 +20,14 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class MessengerConfiguration {
 
     @Bean
-    public RouterFunction<?> webHookRoute(@NotNull final WebHookHandler webHookHandler) {
+    public RouterFunction<?> webHookRoute(@NotNull WebHookHandler webHookHandler,
+                                          @NotNull HomeHandler homeHandler,
+                                          @NotNull MessageHandler messageHandler) {
         return route(GET("/conversation/start"), webHookHandler::sendStartConversationWebHook)
                 .andRoute(GET("/conversation/end"), webHookHandler::sendEndConversationWebHook)
                 .andRoute(GET("/account"), webHookHandler::fetchAccountInfo)
-                .andRoute(POST("/messages/send").and(accept(APPLICATION_JSON)), webHookHandler::sendMessage)
-                .andRoute(POST("/"), webHookHandler::home);
+                .andRoute(POST("/messages/send").and(accept(APPLICATION_JSON)), messageHandler::sendMessage)
+                .andRoute(POST("/"), homeHandler::home);
     }
 
     @Bean
