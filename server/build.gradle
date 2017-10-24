@@ -36,10 +36,16 @@ dependencies {
     testCompile('io.projectreactor:reactor-test')
 }
 
+processResources {
+    from ('frontend/dist/') {
+        into 'public'
+    }
+}
+
 task copyAngularArtifacts(type: Copy) {
-    delete fileTree('src/main/resources/static').include('*')
+    delete fileTree('src/main/resources/public').include('*')
     from '../client/dist'
-    into 'src/main/resources/static'
+    into 'src/main/resources/public'
 }
 
 build.dependsOn copyAngularArtifacts
