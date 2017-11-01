@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import ua.vn.os.messanger.endpoint.HomeHandler;
 import ua.vn.os.messanger.endpoint.MessageHandler;
+import ua.vn.os.messanger.endpoint.UserHandler;
 import ua.vn.os.messanger.endpoint.WebHookHandler;
 
 import javax.validation.constraints.NotNull;
@@ -22,11 +23,13 @@ public class MessengerConfiguration {
     @Bean
     public RouterFunction<?> webHookRoute(@NotNull WebHookHandler webHookHandler,
                                           @NotNull HomeHandler homeHandler,
-                                          @NotNull MessageHandler messageHandler) {
+                                          @NotNull MessageHandler messageHandler,
+                                          @NotNull UserHandler userHandler) {
         return route(GET("/conversation/start"), webHookHandler::sendStartConversationWebHook)
                 .andRoute(GET("/conversation/end"), webHookHandler::sendEndConversationWebHook)
                 .andRoute(GET("/account"), webHookHandler::fetchAccountInfo)
                 .andRoute(POST("/messages/send").and(accept(APPLICATION_JSON)), messageHandler::sendMessage)
+                .andRoute(GET("/users/{id}/contacts").and(accept(APPLICATION_JSON)), userHandler::contacts)
                 .andRoute(POST("/"), homeHandler::home);
     }
 

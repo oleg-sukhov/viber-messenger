@@ -6,24 +6,12 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UserDetailsRepositoryAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.HttpSecurity;
-import org.springframework.security.core.userdetails.MapUserDetailsRepository;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.WebSessionSecurityContextRepository;
 
 @EnableWebFluxSecurity
 public class MessengerSecurityConfiguration {
-
-    @Bean
-    public UserDetailsRepository userDetailsRepository() {
-        UserDetails user = User
-                .withUsername("user")
-                .password("password")
-                .roles("USER").build();
-        return new MapUserDetailsRepository(user);
-    }
 
     @Bean
     public SecurityWebFilterChain messengerSecurityWebFilterChain(ApplicationContext context, ReactiveAuthenticationManager manager) {
