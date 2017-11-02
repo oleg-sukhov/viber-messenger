@@ -1,0 +1,7 @@
+.list-group{
+    max-height: 300px;
+    height: 300px;
+    overflow-y:scroll;
+    border: 1px solid navy;
+    border-radius: 4px;
+}
