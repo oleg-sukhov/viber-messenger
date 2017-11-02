@@ -23,6 +23,7 @@ public class MessengerSecurityConfiguration {
         HttpSecurity.AuthorizeExchangeBuilder authorize = http.authorizeExchange();
         authorize.pathMatchers("/*.css", "/*.js").permitAll();
         authorize.pathMatchers("/").permitAll();
+        authorize.pathMatchers("/users/**").permitAll();
         authorize.anyExchange().authenticated().and().formLogin().disable();
         return http.build();
     }

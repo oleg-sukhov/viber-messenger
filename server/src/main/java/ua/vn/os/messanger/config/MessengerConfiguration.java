@@ -3,6 +3,8 @@ package ua.vn.os.messanger.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.config.CorsRegistry;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import ua.vn.os.messanger.endpoint.HomeHandler;
 import ua.vn.os.messanger.endpoint.MessageHandler;
@@ -18,7 +20,12 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
-public class MessengerConfiguration {
+public class MessengerConfiguration implements WebFluxConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/users/**").allowedOrigins("http://localhost:4200");
+    }
 
     @Bean
     public RouterFunction<?> webHookRoute(@NotNull WebHookHandler webHookHandler,

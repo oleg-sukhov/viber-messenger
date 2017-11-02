@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import ua.vn.os.messanger.domain.User;
 
 @Repository
-public interface UserRepository extends ReactiveMongoRepository<User, Long>, UserDetailsRepository {
+public interface UserRepository extends ReactiveMongoRepository<User, String>, UserDetailsRepository {
 }
